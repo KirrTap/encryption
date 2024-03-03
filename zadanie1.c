@@ -62,7 +62,7 @@ int vypocet_kluca(char *kluc) {
         ascii_hodnota += (int) kluc[i]; 
     }
 
-    int hodnota_kluca = ascii_hodnota % 128;
+    int hodnota_kluca = ascii_hodnota % 256;
     return hodnota_kluca;
 }
 
@@ -75,13 +75,17 @@ void sifrovanie(char *input_file, char *output_file, int hodnota_kluca) {
         return;
     }
 
-    int c;
-    while ((c = fgetc(input)) != EOF) {
-        c = c + hodnota_kluca;
-        if (c > 126) {
-            c = c - 94;
+    if (output == NULL) {
+        printf("chyba");
+        return;
+    }
+    int character;
+    while ((character = fgetc(input)) != EOF) {
+        character = character + hodnota_kluca;
+        if (character > 255) {
+            character = character - 256;
         }
-        fputc(c, output);
+        fputc(character, output);
     }
 
     fclose(input);
@@ -97,13 +101,18 @@ void desifrovanie (char *input_file, char *output_file, int hodnota_kluca) {
         return;
     }
 
-    int c;
-    while ((c = fgetc(input)) != EOF) {
-        c = c - hodnota_kluca;
-        if (c < 32) {
-            c = c + 94;
+    if (output == NULL) {
+        printf("chyba");
+        return;
+    }
+
+    int character;
+    while ((character = fgetc(input)) != EOF) {
+        character = character - hodnota_kluca;
+        if (character < 0) {
+            character = character + 256;
         }
-        fputc(c, output);
+        fputc(character, output);
     }
 
     fclose(input);
